@@ -1,38 +1,8 @@
 import KMeans from "@/utils/kmeans";
+import createImageData from "@/utils/buildImageData";
+import convertToRGBVector from "@/utils/convertToRGBVector";
+
 import { useRef, useState } from "react";
-
-const convertToRGBVector = async (imageData: ImageData) => {
-  const rgbData: number[][] = [];
-  for (let i = 0; i < imageData.data.length; i += 4) {
-    rgbData.push([
-      imageData.data[i],
-      imageData.data[i + 1],
-      imageData.data[i + 2],
-      imageData.data[i + 3],
-    ]);
-  }
-  return rgbData;
-};
-
-const createImageData = async (
-  ctx: CanvasRenderingContext2D,
-  centroids: number[][],
-  labels: number[],
-  width: number,
-  height: number
-) => {
-  const newImageData = ctx?.createImageData(width, height);
-  if (!newImageData) return;
-
-  for (let i = 0; i < labels.length; i++) {
-    newImageData.data[i * 4] = centroids[labels[i]][0];
-    newImageData.data[i * 4 + 1] = centroids[labels[i]][1];
-    newImageData.data[i * 4 + 2] = centroids[labels[i]][2];
-    newImageData.data[i * 4 + 3] = centroids[labels[i]][3];
-  }
-
-  return newImageData;
-};
 
 export default function Page() {
   const [isProcessing, setIsProcessing] = useState(false);

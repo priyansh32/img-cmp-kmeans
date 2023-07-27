@@ -1,17 +1,17 @@
 class KMeans {
-    private data: number[][];
+    private data: Uint8ClampedArray[];
     private k: number;
-    private centroids: number[][] | null;
+    private centroids: Uint8ClampedArray[] | null;
     private clusterAssignments: number[] | null;
   
-    constructor(data: number[][], k: number) {
+    constructor(data: Uint8ClampedArray[], k: number) {
       this.data = data;
       this.k = k;
       this.centroids = null;
       this.clusterAssignments = null;
     }
   
-    private euclideanDistance(point1: number[], point2: number[]): number {
+    private euclideanDistance(point1: Uint8ClampedArray, point2: Uint8ClampedArray): number {
       let sum = 0;
       for (let i = 0; i < point1.length; i++) {
         sum += Math.pow(point1[i] - point2[i], 2);
@@ -19,7 +19,7 @@ class KMeans {
       return Math.sqrt(sum);
     }
   
-    private findNearestCentroid(point: number[], centroids: number[][]): number {
+    private findNearestCentroid(point: Uint8ClampedArray, centroids: Uint8ClampedArray[]): number {
       let minDistance = Infinity;
       let nearestCentroidIndex = 0;
   
@@ -34,26 +34,23 @@ class KMeans {
       return nearestCentroidIndex;
     }
   
-    private calculateCentroid(cluster: number[][]): number[] {
+    private calculateCentroid(cluster: Uint8ClampedArray[]): Uint8ClampedArray {
       const numDimensions = cluster[0].length;
-      const centroid: number[] = new Array(numDimensions).fill(0);
-  
-      for (let i = 0; i < cluster.length; i++) {
-        for (let j = 0; j < numDimensions; j++) {
-          centroid[j] += cluster[i][j];
+      const centroid: Uint8ClampedArray = new Uint8ClampedArray(numDimensions);
+      const centroid_temp: number[] = new Array(numDimensions).fill(0);
+
+      for(let j = 0; j < numDimensions; j++) {
+        for(let i = 0; i < cluster.length; i++) {
+          centroid_temp[j] += cluster[i][j];
         }
+        centroid[j] = Math.floor(centroid_temp[j] / cluster.length);
       }
-  
-      for (let j = 0; j < numDimensions; j++) {
-        centroid[j] /= cluster.length;
-      }
-  
       return centroid;
     }
   
     public cluster(maxIterations: number = 100): void {
-      const numDataPoints = this.data.length;
-      const numDimensions = this.data[0].length;
+      const numDataPoints = this.data.length; 
+      const numDimensions = this.data[0].length; // 3 for RGB
   
         // Initialize random centroids
         const randomIndices: number[] = [];
@@ -63,20 +60,20 @@ class KMeans {
             randomIndices.push(randomIndex);
           }
         }
-        this.centroids = randomIndices.map((index) => [...this.data[index]]);
-    
+        this.centroids = randomIndices.map((index) => Uint8ClampedArray.from(this.data[index]));
+        
     // Main loop
       for (let iteration = 0; iteration < maxIterations; iteration++) {
         // Assign each data point to the nearest centroid
         this.clusterAssignments = new Array(numDataPoints);
         for (let i = 0; i < numDataPoints; i++) {
-          this.clusterAssignments[i] = this.findNearestCentroid(this.data[i], this.centroids);
+          this.clusterAssignments[i] = this.findNearestCentroid(this.data[i], this.centroids!);
         }
   
         // Update centroids
-        const newCentroids: number[][] = new Array(this.k);
+        const newCentroids: Uint8ClampedArray[] = new Array(this.k);
         const it = this.k;
-        for (let i = 0; i < this.k; i++) {
+        for (let i = 0; i < it ; i++) {
           const cluster = this.data.filter((_, idx) => this.clusterAssignments![idx] === i);
           if(cluster.length === 0) {
             this.k--;
@@ -105,7 +102,7 @@ class KMeans {
       }
     }
   
-    public getCentroids(): number[][] | null {
+    public getCentroids(): Uint8ClampedArray[] | null {
       return this.centroids;
     }
   
