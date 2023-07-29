@@ -79,7 +79,7 @@ export default function Page() {
           <div>
             <div>
               <h1 className='text-2xl my-4 leading-6 font-medium text-gray-900 dark:text-gray-100'>
-                Convert Image to 2-16 bit colors
+                Convert Image to 2-16 colors
               </h1>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-300'>
                 This application uses K-Means clustering to identify the most
@@ -93,6 +93,9 @@ export default function Page() {
                 >
                   here
                 </a>
+              </p>
+              <p className='text-sm text-gray-500 dark:text-gray-300'>
+                The resulting image can be compressed to very small sizes with a simple compression algorithm using a hash table.
               </p>
             </div>
 
