@@ -38,7 +38,7 @@ export default function Page() {
         const kmin = new KMeans(rgbData, totalColors);
 
         await (async () => {
-          kmin.cluster(20);
+          kmin.cluster(100);
         })();
 
         const centroids = kmin.getCentroids();
